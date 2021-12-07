@@ -1,7 +1,14 @@
 import Text.Read
 
 inputFilePath :: String
-inputFilePath = "input/01.txt"
+inputFilePath = "puzzle-input/01.txt"
+
+main :: IO ()
+main = do
+  putStr "Part 1: "
+  part1
+  putStr "Part 2: "
+  part2
 
 part1 :: IO ()
 part1 = solve numberOfDecreases
@@ -10,15 +17,15 @@ part2 :: IO ()
 part2 = solve (numberOfDecreases . threeMeasurementWindows)
 
 readIntMaybe :: String -> Maybe Int
-readIntMaybe s = readMaybe s
+readIntMaybe = readMaybe
 
 parseInput :: String -> Maybe [Int]
-parseInput s = mapM id ((map readIntMaybe (words s)))
+parseInput s = mapM readIntMaybe (words s)
 
 solve :: ([Int] -> Int) -> IO ()
 solve solver = do
     fileContent <- readFile inputFilePath
-    print (solver <$> (parseInput fileContent))
+    print (solver <$> parseInput fileContent)
 
 numberOfDecreases :: [Int] -> Int
 numberOfDecreases xs = length (filter (< 0) (diffsToNext xs))

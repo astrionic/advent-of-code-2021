@@ -1,0 +1,46 @@
+name: aoc2021
+version: 0.1.0.0
+github: "astrionic/advent-of-code-2021"
+license: GPL-3
+author: "Adrian Hitz"
+copyright: "2021 Adrian Hitz"
+
+extra-source-files:
+  - README.md
+
+description: Please see the README on GitHub at <https://github.com/astrionic/advent-of-code-2021#readme>
+
+dependencies:
+  - base >= 4.7 && < 5
+
+library:
+  source-dirs: src
+
+_exe-defs: &exe-defaults
+  source-dirs: app
+  ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+  dependencies:
+    - aoc2021
+
+executables:
+  day01:
+    <<: *exe-defaults
+    main: day01.hs
+
+  day02:
+    <<: *exe-defaults
+    main: day02.hs
+
+tests:
+  aoc2021-test:
+    main: Spec.hs
+    source-dirs: test
+    ghc-options:
+      - -threaded
+      - -rtsopts
+      - -with-rtsopts=-N
+    dependencies:
+      - aoc2021
