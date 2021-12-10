@@ -5,45 +5,25 @@ inputFilePath = "puzzle-input/01.txt"
 
 main :: IO ()
 main = do
-  putStr "Part 1: "
-  part1
-  putStr "Part 2: "
-  part2
+  input <- getInput
+  let part1 = numberOfDecreases <$> input
+  putStrLn $ "Part 1: " ++ show part1
+  let part2 = numberOfDecreases . threeMeasurementWindows <$> input
+  putStrLn $ "Part 2: " ++ show part2
 
-part1 :: IO ()
-part1 = solve numberOfDecreases
-
-part2 :: IO ()
-part2 = solve (numberOfDecreases . threeMeasurementWindows)
-
-readIntMaybe :: String -> Maybe Int
-readIntMaybe = readMaybe
+getInput :: IO (Maybe [Int])
+getInput =  parseInput <$> readFile inputFilePath
 
 parseInput :: String -> Maybe [Int]
-parseInput s = mapM readIntMaybe (words s)
-
-solve :: ([Int] -> Int) -> IO ()
-solve solver = do
-    fileContent <- readFile inputFilePath
-    print (solver <$> parseInput fileContent)
+parseInput s = mapM readMaybe (words s)
 
 numberOfDecreases :: [Int] -> Int
-numberOfDecreases xs = length (filter (< 0) (diffsToNext xs))
+numberOfDecreases xs = length $ filter (< 0) (diffsToNext xs)
 
 diffsToNext :: [Int] -> [Int]
-diffsToNext []  = []
-diffsToNext xs  = map (\(x, y) -> x - y) (zip (init xs) (tail xs))
+diffsToNext (x0 : x1 : xs) = x0 - x1 : diffsToNext (x1 : xs)
+diffsToNext _ = []
 
 threeMeasurementWindows :: [Int] -> [Int]
-threeMeasurementWindows xs = map tripleSum (zip3 a b c)
-    where
-        a = dropR 2 xs
-        b = drop 1 (dropR 1 xs)
-        c = drop 2 xs
-
--- |Drop, but it removes the elements from the back instead
-dropR :: Int -> [a] -> [a]
-dropR n = reverse . drop n . reverse
-
-tripleSum :: (Num a) => (a, a, a) -> a
-tripleSum (a, b, c) = a + b + c
+threeMeasurementWindows (x0 : x1 : x2 : xs) = x0 + x1 + x2 : threeMeasurementWindows (x1 : x2 : xs)
+threeMeasurementWindows _ = []
